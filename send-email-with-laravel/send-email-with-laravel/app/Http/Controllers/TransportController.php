@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Interface\TransportServiceInterface;
 use App\Mail\TransportScheduled;
 use App\Models\Transport;
 use App\Http\Requests\StoreTransportRequest;
@@ -11,6 +12,12 @@ use Illuminate\Support\Facades\Mail;
 
 class TransportController extends Controller
 {
+
+    public function __construct(
+        protected TransportServiceInterface $service
+    )
+    {}
+
     /**
      * Display a listing of the resource.
      */
@@ -34,11 +41,15 @@ class TransportController extends Controller
     public function store(StoreTransportRequest $request)
     {
 
-        $transport = Transport::create($request->all());
+        //$transport = Transport::create($request->all());
+
+        $transport = $this->service->createTransport($request->all());
 
         $email = 'email@example.com';
 
         // Envia o email usando o Mailable
+        // Mail::to($email)->send(new TransportScheduled($transport));
+
         Mail::to($email)->send(new TransportScheduled($transport));
 
         return to_route('transports.index');
