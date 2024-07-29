@@ -50,7 +50,7 @@ class TransportController extends Controller
         // Envia o email usando o Mailable
         // Mail::to($email)->send(new TransportScheduled($transport));
 
-        Mail::to($email)->send(new TransportScheduled($transport));
+        Mail::to($email)->queue(new TransportScheduled($transport));
 
         return to_route('transports.index');
     }
